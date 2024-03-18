@@ -7,6 +7,7 @@ const app = express();
 const port = 3000;
 const route = require('./routes/');
 const db = require('./config/db');
+const methodOverride = require('method-override')
 
 //connect to db
 db.connect();
@@ -17,12 +18,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(methodOverride('_method'));
+
 // Định nghĩa engine Handlebars
 const hbs = exphbs.create({
   extname: 'hbs',
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'resource/views/layouts'),
   partialsDir: [path.join(__dirname, 'resource/views/partials')],
+  helpers: {
+    sum : (a, b) => a + b,
+  },
 });
 
 // Đăng ký partials bằng handlebars

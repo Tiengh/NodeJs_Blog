@@ -22,10 +22,24 @@ class CourseController {
     formData.image = `https://img.youtube.com/vi/${req.body.videoId}/0.jpg`;
     formData.slug = req.body.name;
     const course = new Course(req.body);
-    course.save();
-    console.log(req.body);
-    res.send('COURSE SAVED');
+    course.save().then(() => res.redirect(`/courses/${course.slug}`));
   }
+
+  edit(req, res, next) {
+    Course.findById(req.params._id)
+      .lean()
+      .then((course) => {
+        res.render('courses/edit', { course });
+      })
+      .catch(next);
+  }
+
+  update(req, res, next) {
+    Course.updateOne({_id: req.params._id}, req.body)
+        .then(() => res.redirect('/me/stored/courses'))
+        .catch(next);
+}
+  
 }
 
 module.exports = new CourseController();
